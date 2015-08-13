@@ -1,6 +1,7 @@
 package com.epam.mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
@@ -8,34 +9,50 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 
 /**
  * Created by Andrei_Yakushin on 8/12/2015.
  */
-public class SecondarySort {
+public class SecondarySort extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        String[] otherArgs = (new GenericOptionsParser(conf, args)).getRemainingArgs();
-        if (otherArgs.length != 2) {
+        System.exit(ToolRunner.run(new Configuration(), new SecondarySort(), args));
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public int run(String[] strings) throws Exception {
+        if (strings.length != 2) {
             System.err.println("Usage: SecondarySort <in> <out>");
-            System.exit(2);
+            return 2;
         }
 
-        Job job = new Job(conf, "secondary sort");
+        Job job = new Job(getConf(), "secondary sort");
         job.setJarByClass(SecondarySort.class);
+
         job.setMapperClass(SecondarySort.TheMapper.class);
         job.setReducerClass(SecondarySort.TheReducer.class);
-        job.setOutputKeyClass(EntryWritable.class);
-        job.setOutputValueClass(NullWritable.class);
+
         job.setPartitionerClass(ThePartitioner.class);
         job.setGroupingComparatorClass(TheGroupingComparator.class);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+        job.setOutputKeyClass(EntryWritable.class);
+        job.setOutputValueClass(NullWritable.class);
+
+        FileInputFormat.addInputPath(job, new Path(strings[0]));
+        job.setInputFormatClass(TextInputFormat.class);
+
+        FileOutputFormat.setOutputPath(job, new Path(strings[1]));
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        return job.waitForCompletion(true) ? 0 : 1;
     }
 
     //------------------------------------------------------------------------------------------------------------------
