@@ -23,6 +23,7 @@ public class WordCount {
 
         private Text word = new Text();
 
+        @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             Matcher matcher = PATTERN.matcher(value.toString());
             int s = 0;
@@ -40,6 +41,7 @@ public class WordCount {
     public static class TheReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         private IntWritable result = new IntWritable();
 
+        @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
             IntWritable val;
@@ -57,7 +59,7 @@ public class WordCount {
         Configuration conf = new Configuration();
         String[] otherArgs = (new GenericOptionsParser(conf, args)).getRemainingArgs();
         if (otherArgs.length != 2) {
-            System.err.println("Usage: wordcount <in> <out>");
+            System.err.println("Usage: WordCount <in> <out>");
             System.exit(2);
         }
 
