@@ -17,6 +17,29 @@ import java.io.IOException;
  * Created by Andrei_Yakushin on 8/12/2015.
  */
 public class SecondarySort {
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        String[] otherArgs = (new GenericOptionsParser(conf, args)).getRemainingArgs();
+        if (otherArgs.length != 2) {
+            System.err.println("Usage: SecondarySort <in> <out>");
+            System.exit(2);
+        }
+
+        Job job = new Job(conf, "secondary sort");
+        job.setJarByClass(SecondarySort.class);
+        job.setMapperClass(SecondarySort.TheMapper.class);
+        job.setReducerClass(SecondarySort.TheReducer.class);
+        job.setOutputKeyClass(EntryWritable.class);
+        job.setOutputValueClass(NullWritable.class);
+        job.setPartitionerClass(ThePartitioner.class);
+        job.setGroupingComparatorClass(TheGroupingComparator.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
     public static class TheMapper extends Mapper<Object, Text, EntryWritable, NullWritable> {
         private static final NullWritable NULL = NullWritable.get();
         private final EntryWritable entry = new EntryWritable();
@@ -64,28 +87,5 @@ public class SecondarySort {
             IntWritable thatValue = ((EntryWritable) b).getValue();
             return thisValue.compareTo(thatValue);
         }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        String[] otherArgs = (new GenericOptionsParser(conf, args)).getRemainingArgs();
-        if (otherArgs.length != 2) {
-            System.err.println("Usage: SecondarySort <in> <out>");
-            System.exit(2);
-        }
-
-        Job job = new Job(conf, "secondary sort");
-        job.setJarByClass(SecondarySort.class);
-        job.setMapperClass(SecondarySort.TheMapper.class);
-        job.setReducerClass(SecondarySort.TheReducer.class);
-        job.setOutputKeyClass(EntryWritable.class);
-        job.setOutputValueClass(NullWritable.class);
-        job.setPartitionerClass(ThePartitioner.class);
-        job.setGroupingComparatorClass(TheGroupingComparator.class);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

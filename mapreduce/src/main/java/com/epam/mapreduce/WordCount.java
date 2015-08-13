@@ -17,6 +17,28 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
 public class WordCount {
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        String[] otherArgs = (new GenericOptionsParser(conf, args)).getRemainingArgs();
+        if (otherArgs.length != 2) {
+            System.err.println("Usage: WordCount <in> <out>");
+            System.exit(2);
+        }
+
+        Job job = new Job(conf, "word count");
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(WordCount.TheMapper.class);
+        job.setCombinerClass(WordCount.TheReducer.class);
+        job.setReducerClass(WordCount.TheReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
     public static class TheMapper extends Mapper<Object, Text, Text, IntWritable> {
         private static final IntWritable ONE = new IntWritable(1);
         private static final Pattern PATTERN = Pattern.compile("[A-Za-z]([A-Za-z-]?[A-Za-z]+)*");
@@ -51,27 +73,5 @@ public class WordCount {
             this.result.set(sum);
             context.write(key, this.result);
         }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        String[] otherArgs = (new GenericOptionsParser(conf, args)).getRemainingArgs();
-        if (otherArgs.length != 2) {
-            System.err.println("Usage: WordCount <in> <out>");
-            System.exit(2);
-        }
-
-        Job job = new Job(conf, "word count");
-        job.setJarByClass(WordCount.class);
-        job.setMapperClass(WordCount.TheMapper.class);
-        job.setCombinerClass(WordCount.TheReducer.class);
-        job.setReducerClass(WordCount.TheReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
