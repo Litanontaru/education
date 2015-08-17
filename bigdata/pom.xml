@@ -12,6 +12,7 @@
         <module>mapreduce</module>
         <module>spark</module>
         <module>common</module>
+        <module>spring</module>
     </modules>
 
 
