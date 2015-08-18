@@ -17,7 +17,8 @@
     <hdp:job id="wordCount"
              input-path="Idiot.txt"
              output-path="mid"
-             jar-by-class="com.epam.mapreduce.SpringMR"
+             jar="mapreduce7.jar"
+             libs="lib/common1.jar"
              mapper="com.epam.mapreduce.WordCount$TheMapper"
              reducer="com.epam.mapreduce.WordCount$TheReducer"/>
 

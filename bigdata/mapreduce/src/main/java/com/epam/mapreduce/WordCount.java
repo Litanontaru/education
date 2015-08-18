@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.epam.common.LengthPredicate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -55,16 +56,26 @@ public class WordCount extends Configured implements Tool {
         private static final IntWritable ONE = new IntWritable(1);
         private static final Pattern PATTERN = Pattern.compile("[A-Za-z]([A-Za-z-]?[A-Za-z]+)*");
 
+        private LengthPredicate lengthPredicate;
+
         private Text word = new Text();
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            super.setup(context);
+            lengthPredicate = new LengthPredicate();
+        }
 
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             Matcher matcher = PATTERN.matcher(value.toString());
             int s = 0;
             while (matcher.find(s)) {
-                String group = matcher.group();
-                this.word.set(group.toLowerCase());
-                context.write(this.word, ONE);
+                String word = matcher.group().toLowerCase();
+                if (lengthPredicate.test(word)) {
+                    this.word.set(word);
+                    context.write(this.word, ONE);
+                }
                 s = matcher.end();
             }
         }
