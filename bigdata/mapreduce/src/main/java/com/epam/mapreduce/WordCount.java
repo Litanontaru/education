@@ -21,6 +21,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import javax.inject.Inject;
+
 public class WordCount extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
         System.exit(ToolRunner.run(new Configuration(), new WordCount(), args));
@@ -56,6 +58,7 @@ public class WordCount extends Configured implements Tool {
         private static final IntWritable ONE = new IntWritable(1);
         private static final Pattern PATTERN = Pattern.compile("[A-Za-z]([A-Za-z-]?[A-Za-z]+)*");
 
+        @Inject
         private LengthPredicate lengthPredicate;
 
         private Text word = new Text();
@@ -63,7 +66,7 @@ public class WordCount extends Configured implements Tool {
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
-            lengthPredicate = new LengthPredicate();
+            SpringContainer.requestInjections(this);
         }
 
         @Override
