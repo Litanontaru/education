@@ -1,16 +1,18 @@
 package com.epam.mapreduce;
 
 import com.epam.common.LengthPredicate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class MapperProcessor {
     private final LengthPredicate predicate;
 
-    @Autowired
+    @Inject
     public MapperProcessor(LengthPredicate predicate) {
         this.predicate = predicate;
     }

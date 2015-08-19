@@ -1,11 +1,5 @@
 package com.epam.mapreduce;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.epam.common.LengthPredicate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -22,6 +16,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.util.Iterator;
 
 public class WordCount extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
@@ -56,10 +52,9 @@ public class WordCount extends Configured implements Tool {
 
     public static class TheMapper extends Mapper<Object, Text, Text, IntWritable> {
         private static final IntWritable ONE = new IntWritable(1);
-        private static final Pattern PATTERN = Pattern.compile("[A-Za-z]([A-Za-z-]?[A-Za-z]+)*");
 
         @Inject
-        private LengthPredicate lengthPredicate;
+        private MapperProcessor processor;
 
         private Text word = new Text();
 
@@ -71,15 +66,9 @@ public class WordCount extends Configured implements Tool {
 
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            Matcher matcher = PATTERN.matcher(value.toString());
-            int s = 0;
-            while (matcher.find(s)) {
-                String word = matcher.group().toLowerCase();
-                if (lengthPredicate.test(word)) {
-                    this.word.set(word);
-                    context.write(this.word, ONE);
-                }
-                s = matcher.end();
+            for (Iterator<String> it = processor.process(value.toString()); it.hasNext();) {
+                word.set(it.next());
+                context.write(this.word, ONE);
             }
         }
     }
