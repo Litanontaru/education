@@ -18,6 +18,7 @@
         <dependencySet>
             <includes>
                 <include>org.springframework*</include>
+                <include>education*</include>
             </includes>
             <outputDirectory>/lib/</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
