@@ -14,6 +14,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class WordCount extends Configured implements Tool {
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
-            SpringContainer.requestInjections(this);
+            new ClassPathXmlApplicationContext("META-INF/spring/application-context.xml").getAutowireCapableBeanFactory().autowireBean(this);
         }
 
         @Override
