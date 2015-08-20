@@ -23,7 +23,7 @@ public class MapperProcessorUTest {
     };
 
     public void test() {
-        MapperProcessor processor = new MapperProcessor(new LengthPredicate());
+        MapperProcessor processor = new MapperProcessor(new LengthPredicate(4));
 
         Iterator<String> process = processor.process(INPUT);
         for (String s : OUTPUT) {

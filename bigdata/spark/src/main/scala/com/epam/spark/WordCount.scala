@@ -12,7 +12,7 @@ import SparkContext._
 object WordCount {
   def main(args: Array[String]) {
     val sc = new SparkContext(new SparkConf().setAppName("Word Count"))
-    val c = new LengthPredicate()
+    val c = new LengthPredicate(4)
     sc
       .textFile(args(0))
       .flatMap(line => split(line))
