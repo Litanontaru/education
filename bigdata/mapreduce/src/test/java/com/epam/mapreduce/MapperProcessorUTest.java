@@ -1,7 +1,6 @@
 package com.epam.mapreduce;
 
 import com.epam.common.LengthPredicate;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Iterator;
