@@ -37,8 +37,8 @@ public class Parser {
 
         try {
             FileSystem fs = FileSystem.get(new Configuration());
-//            original(fs);
-//            intermediate(fs);
+            original(fs);
+            intermediate(fs);
             sort(fs);
             mergeSortIntermediate(fs);
         } catch (Throwable e) {
