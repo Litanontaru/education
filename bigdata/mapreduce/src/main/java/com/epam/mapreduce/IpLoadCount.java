@@ -4,9 +4,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -27,9 +25,17 @@ import java.util.regex.Pattern;
  * @since 10/24/2015 4:04 PM
  */
 public class IpLoadCount extends Configured implements Tool {
+
+    private static final String BROWSER = "BROWSER";
+
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        conf.set("mapred.textoutputformat.separator", ",");
+        conf.set("mapreduce.output.textoutputformat.separator", ",");
+        // Compress MapReduce output
+        conf.set("mapreduce.output.fileoutputformat.compress","true");
+        conf.set("mapreduce.output.fileoutputformat.compress.type","BLOCK");
+        conf.set("mapreduce.output.fileoutputformat.compress.codec","org.apache.hadoop.io.compress.SnappyCodec");
+
         System.exit(ToolRunner.run(conf, new IpLoadCount(), args));
     }
 
@@ -55,7 +61,18 @@ public class IpLoadCount extends Configured implements Tool {
         FileOutputFormat.setOutputPath(job, new Path(strings[1]));
         job.setOutputFormatClass(TextOutputFormat.class);
 
-        return job.waitForCompletion(true) ? 0 : 1;
+        int result = job.waitForCompletion(true) ? 0 : 1;
+        /*Counters counters = job.getCounters();
+        for (CounterGroup group : counters) {
+            if (group.getName().equals(BROWSER)) {
+                for (Counter counter : group) {
+                    System.out.println("  - " + counter.getDisplayName() + ": " + counter.getName() + ": "+counter.getValue());
+                }
+                break;
+            }
+        }*/
+
+        return result;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -88,7 +105,13 @@ public class IpLoadCount extends Configured implements Tool {
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("cant parse: " + value.toString());
                 }
-                context.write(ip, count);
+                /*context.write(ip, count);
+                it.next();
+                String browser = it.next();
+                WordIterator browserExtractor = new WordIterator(null, browser);
+                if (browserExtractor.hasNext()) {
+                    context.getCounter(BROWSER, browserExtractor.next()).increment(1);
+                }*/
             }
         }
     }

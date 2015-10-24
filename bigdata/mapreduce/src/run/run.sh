@@ -28,4 +28,4 @@ if hadoop fs -test -d $4; then
 fi
 
 #run hadoop
-hadoop jar $1.jar $2 -libjars $libjars $3 $4;
+yarn jar $1.jar $2 -libjars $libjars $3 $4;
