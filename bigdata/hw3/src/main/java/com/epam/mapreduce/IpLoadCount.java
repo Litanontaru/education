@@ -11,7 +11,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -62,7 +61,7 @@ public class IpLoadCount extends Configured implements Tool {
         job.setOutputFormatClass(TextOutputFormat.class);
 
         int result = job.waitForCompletion(true) ? 0 : 1;
-        /*Counters counters = job.getCounters();
+        Counters counters = job.getCounters();
         for (CounterGroup group : counters) {
             if (group.getName().equals(BROWSER)) {
                 for (Counter counter : group) {
@@ -70,7 +69,7 @@ public class IpLoadCount extends Configured implements Tool {
                 }
                 break;
             }
-        }*/
+        }
 
         return result;
     }
@@ -84,14 +83,8 @@ public class IpLoadCount extends Configured implements Tool {
         private EntryWritable count = new EntryWritable();
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
-            super.setup(context);
-            new ClassPathXmlApplicationContext("META-INF/spring/application-context.xml").getAutowireCapableBeanFactory().autowireBean(this);
-        }
-
-        @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            WordIterator it = new WordIterator(null, value.toString(), PATTERN);
+            WordIterator it = new WordIterator(value.toString(), PATTERN);
             ip.set(it.next());
             it.next();
             it.next();
@@ -105,13 +98,13 @@ public class IpLoadCount extends Configured implements Tool {
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("cant parse: " + value.toString());
                 }
-                /*context.write(ip, count);
+                context.write(ip, count);
                 it.next();
                 String browser = it.next();
-                WordIterator browserExtractor = new WordIterator(null, browser);
+                WordIterator browserExtractor = new WordIterator(browser);
                 if (browserExtractor.hasNext()) {
                     context.getCounter(BROWSER, browserExtractor.next()).increment(1);
-                }*/
+                }
             }
         }
     }
