@@ -16,6 +16,7 @@
         <module>scala</module>
         <module>hadoop-simple</module>
         <module>hw3</module>
+        <module>hw4</module>
     </modules>
 
 
