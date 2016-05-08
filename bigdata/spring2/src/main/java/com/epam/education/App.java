@@ -1,6 +1,7 @@
 package com.epam.education;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -22,11 +23,13 @@ public class App {
     }
 
     public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml");
+        ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml");
         App app = ctx.getBean(App.class);
 
         System.out.println(ctx.getBean(Event.class));
         System.out.println(ctx.getBean(Event.class));
         System.out.println(ctx.getBean(Event.class));
+
+        ctx.close();
     }
 }

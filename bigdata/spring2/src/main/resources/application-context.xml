@@ -22,5 +22,10 @@
     </bean>
 
     <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
+    <bean id="fileLogger" class="com.epam.education.FileEventLogger" init-method="init">
+        <constructor-arg value="log.txt"/>
+    </bean>
+    <bean id="cacheFielLogger" class="com.epam.education.CacheFileEventLogger" parent="fileLogger"
+          destroy-method="destroy"/>
 
 </beans>
