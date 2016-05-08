@@ -6,5 +6,5 @@ package com.epam.education;
  */
 public enum EventType {
     INFO,
-    Error;
+    ERROR;
 }
