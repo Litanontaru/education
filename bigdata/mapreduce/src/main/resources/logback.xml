@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %-5level %msg [%logger{0}] [%thread]%n</pattern>
+        </encoder>
+    </appender>
+    <root level="debug">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>mapreduce.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d %-5level %msg [%logger{0}] [%thread]%n</pattern>
+        </encoder>
+    </appender>
+    <root level="debug">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
