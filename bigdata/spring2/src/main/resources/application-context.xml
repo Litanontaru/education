@@ -5,11 +5,12 @@
  		http://www.springframework.org/schema/beans
  		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
+    <import resource="loggers.xml"/>
+
     <bean id="client" class="com.epam.education.Client">
         <constructor-arg value="1"/>
         <constructor-arg value="John"/>
     </bean>
-    <bean id="eventLogger" class="com.epam.education.ConsoleEventLogger" />
     <bean id="app" class="com.epam.education.App">
         <constructor-arg ref="client"/>
         <constructor-arg ref="eventLogger"/>
@@ -22,10 +23,5 @@
     </bean>
 
     <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
-    <bean id="fileLogger" class="com.epam.education.FileEventLogger" init-method="init">
-        <constructor-arg value="log.txt"/>
-    </bean>
-    <bean id="cacheFielLogger" class="com.epam.education.CacheFileEventLogger" parent="fileLogger"
-          destroy-method="destroy"/>
 
 </beans>
