@@ -13,7 +13,13 @@
     </bean>
     <bean id="app" class="com.epam.education.App">
         <constructor-arg ref="client"/>
-        <constructor-arg ref="eventLogger"/>
+        <constructor-arg>
+            <map>
+                <entry key="INFO" value-ref="eventLogger"/>
+                <entry key="ERROR" value-ref="combinedLogger"/>
+            </map>
+        </constructor-arg>
+        <property name="defaultLogger" ref="cacheFielLogger"/>
     </bean>
     <bean id="event" class="com.epam.education.Event" scope="prototype">
         <constructor-arg>

@@ -24,7 +24,7 @@ public class FileEventLogger implements EventLogger {
         }
     }
 
-    public void logEvent(Event event) {
+    public void logEvent(Event event, EventType eventType) {
         try {
             FileUtils.writeStringToFile(file, event.toString());
         } catch (IOException e) {

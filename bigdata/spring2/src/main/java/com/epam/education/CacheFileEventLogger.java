@@ -1,5 +1,7 @@
 package com.epam.education;
 
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,15 +11,15 @@ import java.util.List;
  */
 public class CacheFileEventLogger extends FileEventLogger {
     private int cacheSize;
-    private List<Event> cache = new ArrayList<Event>();
+    private List<Pair<Event, EventType>> cache = new ArrayList<Pair<Event, EventType>>();
 
     public CacheFileEventLogger(String filename) {
         super(filename);
     }
 
     @Override
-    public void logEvent(Event event) {
-        cache.add(event);
+    public void logEvent(Event event, EventType eventType) {
+        cache.add(new Pair<Event, EventType>(event, eventType));
         if (cache.size() >= cacheSize) {
             flush();
             cache.clear();
@@ -25,8 +27,8 @@ public class CacheFileEventLogger extends FileEventLogger {
     }
 
     private void flush() {
-        for (Event e : cache) {
-            super.logEvent(e);
+        for (Pair<Event, EventType> pair : cache) {
+            super.logEvent(pair.getKey(), pair.getValue());
         }
     }
 

@@ -11,5 +11,13 @@
     </bean>
     <bean id="cacheFielLogger" class="com.epam.education.CacheFileEventLogger" parent="fileLogger"
           destroy-method="destroy"/>
+    <bean id="combinedLogger" class="com.epam.education.CombinerEventLogger">
+        <constructor-arg>
+            <list>
+                <ref bean="eventLogger"/>
+                <ref bean="cacheFielLogger"/>
+            </list>
+        </constructor-arg>
+    </bean>
 
 </beans>

@@ -5,5 +5,5 @@ package com.epam.education;
  * @since 5/8/2016 9:45 AM
  */
 public interface EventLogger {
-    void logEvent(Event event);
+    void logEvent(Event event, EventType eventType);
 }
