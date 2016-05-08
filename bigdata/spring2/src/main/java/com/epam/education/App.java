@@ -1,5 +1,8 @@
 package com.epam.education;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 /**
  * @author Andrei_Yakushin
  * @since 5/8/2016 9:34 AM
@@ -14,13 +17,16 @@ public class App {
     }
 
     public void logEvent(String msg) {
-        String message = msg.replaceAll(client.getId(), client.getFullName());
-        eventLogger.logEvent(message);
+//        String message = msg.replaceAll(client.getId(), client.getFullName());
+//        eventLogger.logEvent(message);
     }
 
     public static void main(String[] args) {
-//        App app = new App();
-//        app.client = new Client("1", "John");
-//        app.eventLogger = new ConsoleEventLogger();
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml");
+        App app = ctx.getBean(App.class);
+
+        System.out.println(ctx.getBean(Event.class));
+        System.out.println(ctx.getBean(Event.class));
+        System.out.println(ctx.getBean(Event.class));
     }
 }

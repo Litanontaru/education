@@ -10,6 +10,17 @@
         <constructor-arg value="John"/>
     </bean>
     <bean id="eventLogger" class="com.epam.education.ConsoleEventLogger" />
-    <bean id="app" class="com.epam.education.App"/>
+    <bean id="app" class="com.epam.education.App">
+        <constructor-arg ref="client"/>
+        <constructor-arg ref="eventLogger"/>
+    </bean>
+    <bean id="event" class="com.epam.education.Event" scope="prototype">
+        <constructor-arg>
+            <bean class="java.util.Date"/>
+        </constructor-arg>
+        <constructor-arg ref="dateFormat"/>
+    </bean>
+
+    <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
 
 </beans>
