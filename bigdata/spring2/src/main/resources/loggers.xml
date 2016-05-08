@@ -9,13 +9,13 @@
     <bean id="fileLogger" class="com.epam.education.FileEventLogger" init-method="init">
         <constructor-arg value="log.txt"/>
     </bean>
-    <bean id="cacheFielLogger" class="com.epam.education.CacheFileEventLogger" parent="fileLogger"
+    <bean id="cacheFileLogger" class="com.epam.education.CacheFileEventLogger" parent="fileLogger"
           destroy-method="destroy"/>
     <bean id="combinedLogger" class="com.epam.education.CombinerEventLogger">
         <constructor-arg>
             <list>
                 <ref bean="eventLogger"/>
-                <ref bean="cacheFielLogger"/>
+                <ref bean="cacheFileLogger"/>
             </list>
         </constructor-arg>
     </bean>
